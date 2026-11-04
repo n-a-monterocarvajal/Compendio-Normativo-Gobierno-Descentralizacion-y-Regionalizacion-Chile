@@ -141,7 +141,7 @@ jobs:
           fi
 
       - name: Crear release en borrador
-        if: inputs.publicar != false
+        if: ${{ format('{0}', inputs.publicar) != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.publicacion.outputs.tag }}
@@ -156,7 +156,7 @@ jobs:
             --notes-file release-notes.md
 
       - name: Publicar release validada
-        if: inputs.publicar != false
+        if: ${{ format('{0}', inputs.publicar) != 'false' }}
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.publicacion.outputs.tag }}
