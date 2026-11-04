@@ -1,0 +1,167 @@
+name: Revisar versiones de gobierno
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "53 11 * * *"
+
+permissions:
+  contents: write
+  actions: write
+  issues: write
+
+concurrency:
+  group: revisar-versiones-gobierno
+  cancel-in-progress: false
+
+jobs:
+  revisar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Obtener repositorio
+        uses: actions/checkout@v7
+
+      - name: Preparar Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Instalar monitor
+        run: |
+          pip install -r app/requirements.txt
+          python -m playwright install --with-deps chromium
+
+      - name: Revisar versiones de Ley Chile
+        id: revisar
+        run: |
+          revisar-versiones-leychile \
+            --config app/fuentes.json \
+            --estado .github/estado-versiones.json \
+            --cambios trabajo/cambios-versiones.json \
+            --resumen trabajo/cambios-versiones.md
+
+      - name: Publicar resumen de la revisión
+        run: cat trabajo/cambios-versiones.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Persistir nuevo estado
+        if: steps.revisar.outputs.state_updated == 'true'
+        env:
+          SOLO_INFORMATIVO: ${{ steps.revisar.outputs.changes_detected != 'true' && steps.revisar.outputs.informational_changes == 'true' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/estado-versiones.json
+          if ! git diff --cached --quiet; then
+            if [ "$SOLO_INFORMATIVO" = "true" ]; then
+              mensaje="chore: registrar reclasificación de vigencias históricas"
+            else
+              mensaje="chore: actualizar estado de versiones"
+            fi
+            git commit -m "$mensaje"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Lanzar nuevo compendio
+        if: steps.revisar.outputs.changes_detected == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run generar-compendio.yml \
+            --ref "$GITHUB_REF_NAME" \
+            --field notas_actualizacion="$(cat trabajo/cambios-versiones.md)"
+
+      - name: Avisar normas derogadas o refundidas
+        if: steps.revisar.outputs.avisos_norma == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          gh label create aviso-norma \
+            --color D93F0B \
+            --description "Una norma del compendio fue derogada o refundida según Ley Chile" 2>/dev/null || true
+          {
+            echo "Según Ley Chile, una o más normas del compendio fueron derogadas o refundidas en otra."
+            echo "El compendio las sigue incluyendo: decide si se mantienen, se quitan o se reemplazan en \`app/fuentes.json\`."
+            echo
+            echo "Run: $RUN_URL"
+            echo
+            cat trabajo/cambios-versiones.md
+          } > cuerpo-aviso.md
+          gh issue create \
+            --title "Revisar normas derogadas o refundidas del compendio" \
+            --body-file cuerpo-aviso.md \
+            --label aviso-norma
+
+      - name: Subir resultado de la revisión
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: revision-versiones-gobierno
+          path: |
+            trabajo/cambios-versiones.json
+            trabajo/cambios-versiones.md
+          retention-days: 30
+          if-no-files-found: ignore
+
+      - name: Avisar la falla con un issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          TIPO_FALLA: ${{ steps.revisar.outputs.tipo_falla }}
+          DETALLE_FALLA: ${{ steps.revisar.outputs.detalle_falla }}
+        run: |
+          set -euo pipefail
+          if [ "$TIPO_FALLA" = "transitoria" ]; then
+            # Una falla transitoria solo se avisa si las dos revisiones programadas
+            # anteriores también fallaron: tres días seguidos ya no parece pasajero.
+            fallas_previas=$(gh run list --workflow revisar-versiones.yml --event schedule --status completed \
+              --limit 2 --json conclusion --jq '[.[] | select(.conclusion == "failure")] | length' 2>/dev/null || echo 0)
+            if [ "$fallas_previas" -lt 2 ]; then
+              echo "Falla transitoria de Ley Chile; la revisión de mañana vuelve a intentarlo."
+              exit 0
+            fi
+          fi
+          estado_github=$(bash .github/scripts/estado-github.sh 2>/dev/null || echo "No se pudo consultar el estado de GitHub.")
+          gh label create fallo-revision \
+            --color B60205 \
+            --description "La revisión diaria de versiones falló por una causa no transitoria o repetida" 2>/dev/null || true
+          case "$TIPO_FALLA" in
+            transitoria)
+              causa="Ley Chile no respondió o respondió sin JSON (timeout, conexión, HTTP 429 o 5xx, cuerpo vacío o página HTML) en esta revisión y en las dos anteriores. Si sigue así, puede haber cambiado el servicio get_norma_json."
+              ;;
+            formato)
+              causa="Ley Chile respondió, pero no con la forma que la revisión sabe leer: JSON ilegible, un HTTP 4xx o metadatos sin alguno de los campos esperados. Lo más probable es que haya cambiado el servicio get_norma_json."
+              ;;
+            *)
+              causa="La revisión falló por una causa distinta de una respuesta de Ley Chile, por ejemplo al instalar el motor, al leer la configuración o el estado guardado, al versionar el estado nuevo o al lanzar la generación. El log del run indica el paso que falló."
+              ;;
+          esac
+          {
+            echo "La revisión diaria de versiones falló."
+            echo
+            echo "Run: $RUN_URL"
+            echo
+            echo "$causa"
+            echo
+            if [ -n "${DETALLE_FALLA:-}" ]; then
+              echo "Detalle: $DETALLE_FALLA"
+              echo
+            fi
+            echo "Las fallas transitorias de Ley Chile (timeout, conexión, HTTP 429 o 5xx, cuerpo vacío o página HTML)"
+            echo "solo abren issue si se repiten tres días seguidos: antes, la revisión del día siguiente vuelve a intentarlo sola."
+            echo
+            echo "$estado_github"
+          } > cuerpo-issue.md
+          existente=$(gh issue list --state open --label fallo-revision --json number --jq '.[0].number // empty')
+          if [ -n "$existente" ]; then
+            gh issue comment "$existente" --body "$(printf '%s: %s\n\n%s\n\n%s\n' "La revisión volvió a fallar" "$RUN_URL" "${DETALLE_FALLA:-Sin detalle.}" "$estado_github")"
+          else
+            gh issue create \
+              --title "Falló la revisión diaria de versiones" \
+              --body-file cuerpo-issue.md \
+              --label fallo-revision
+          fi

@@ -1,0 +1,615 @@
+{
+  "titulo_compendio": "Compendio normativo de Gobierno, Descentralización y Regionalización de Chile",
+  "salida_base": "CompendioGobiernoDescentralizacionRegionalizacionChile",
+  "bcn_navegador_visible": false,
+  "fuentes": [
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 100, de 2005, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Constitución Política de la República de Chile.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=242302",
+      "id_norma": 242302,
+      "archivo": "01_constitucion_politica",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1-19.653, de 2000, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.575, Orgánica Constitucional de Bases Generales de la Administración del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=191865",
+      "id_norma": 191865,
+      "archivo": "02_bases_generales_administracion",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.174, que crea la XIV Región de Los Ríos y la Provincia de Ranco en su territorio.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=259774",
+      "id_norma": 259774,
+      "archivo": "03_region_los_rios",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.175, que crea la XV Región de Arica y Parinacota y la Provincia del Tamarugal en la Región de Tarapacá.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=259864",
+      "id_norma": 259864,
+      "archivo": "04_region_arica_parinacota",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.033, que crea la XVI Región de Ñuble y las provincias de Diguillín, Punilla e Itata.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1107597",
+      "id_norma": 1107597,
+      "archivo": "05_region_nuble",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.070, que regula el ejercicio de los derechos a residir, permanecer y trasladarse hacia y desde el territorio especial de Isla de Pascua.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1116414",
+      "id_norma": 1116414,
+      "archivo": "06_isla_de_pascua",
+      "capitulo": "I. Constitución, organización territorial del Estado y administración general"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1-18.359, de 1985, del Ministerio del Interior, que traspasa y asigna funciones a la Subsecretaría de Desarrollo Regional y Administrativo.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=3419",
+      "id_norma": 3419,
+      "archivo": "07_funciones_subdere",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 7.912, de 1927, del Ministerio del Interior, que organiza las Secretarías del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=5654",
+      "id_norma": 5654,
+      "archivo": "08_secretarias_de_estado",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 18.359, que crea el cargo de Subsecretario de Desarrollo Regional y Administrativo en el Ministerio del Interior.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=29774",
+      "id_norma": 29774,
+      "archivo": "09_subsecretario_desarrollo_regional",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 19, de 2001, del Ministerio Secretaría General de la Presidencia, que faculta a los Ministros de Estado para firmar «por orden del Presidente de la República».",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=181662",
+      "id_norma": 181662,
+      "archivo": "10_firma_por_orden_del_presidente",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.325, de Migración y Extranjería.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1158549",
+      "id_norma": 1158549,
+      "archivo": "11_migracion_extranjeria",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.730, que crea el Ministerio de Seguridad Pública.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1210815",
+      "id_norma": 1210815,
+      "archivo": "12_ministerio_seguridad_publica",
+      "capitulo": "II. Gobierno interior, ministerios, delegaciones y SUBDERE"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1-19.175, de 2005, del Ministerio del Interior, que fija el texto refundido, coordinado, sistematizado y actualizado de la Ley N.º 19.175, Orgánica Constitucional sobre Gobierno y Administración Regional.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=243771",
+      "id_norma": 243771,
+      "archivo": "13_gobierno_administracion_regional",
+      "capitulo": "III. Gobiernos regionales, descentralización y transferencias"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 656, de 2019, del Ministerio del Interior y Seguridad Pública, que aprueba el Reglamento que fija las condiciones, plazos y demás materias concernientes al procedimiento de transferencia de competencias.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1149580",
+      "id_norma": 1149580,
+      "archivo": "14_reglamento_transferencia_competencias",
+      "capitulo": "III. Gobiernos regionales, descentralización y transferencias"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 90, de 2023, del Ministerio del Interior y Seguridad Pública, que aprueba el nuevo Reglamento que fija la Política Nacional sobre Zonas Rezagadas en Materia Social.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1195635",
+      "id_norma": 1195635,
+      "archivo": "15_politica_zonas_rezagadas",
+      "capitulo": "III. Gobiernos regionales, descentralización y transferencias"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.379, que fija plantas de personal de los servicios administrativos de los gobiernos regionales.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=30746",
+      "id_norma": 30746,
+      "archivo": "16_plantas_gobiernos_regionales",
+      "capitulo": "III. Gobiernos regionales, descentralización y transferencias"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1, de 2006, del Ministerio del Interior, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.695, Orgánica Constitucional de Municipalidades.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=251693",
+      "id_norma": 251693,
+      "archivo": "17_municipalidades",
+      "capitulo": "IV. Municipalidades, régimen orgánico y participación local"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 1.161, de 2011, del Ministerio del Interior y Seguridad Pública, que aprueba el Reglamento para la aplicación de las normas de la Ley N.º 18.695, Orgánica Constitucional de Municipalidades, referidas a las asociaciones municipales con personalidad jurídica.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1038855",
+      "id_norma": 1038855,
+      "archivo": "18_reglamento_asociaciones_municipales",
+      "capitulo": "IV. Municipalidades, régimen orgánico y participación local"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto Ley N.º 1.263, de 1975, del Ministerio de Hacienda, Orgánico de Administración Financiera del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=6536",
+      "id_norma": 6536,
+      "archivo": "19_administracion_financiera_estado",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto Ley N.º 1.939, de 1977, del Ministerio de Tierras y Colonización, que establece normas sobre adquisición, administración y disposición de bienes del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=6778",
+      "id_norma": 6778,
+      "archivo": "20_bienes_del_estado",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 2.385, de 1996, del Ministerio del Interior, que fija el texto refundido y sistematizado del Decreto Ley N.º 3.063, de 1979, sobre Rentas Municipales.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=18967",
+      "id_norma": 18967,
+      "archivo": "21_rentas_municipales",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1, de 1998, del Ministerio de Hacienda, que fija el texto refundido, coordinado, sistematizado y actualizado de la Ley N.º 17.235, sobre Impuesto Territorial.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=128563",
+      "id_norma": 128563,
+      "archivo": "22_impuesto_territorial",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.862, que establece registros de las personas jurídicas receptoras de fondos públicos.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=207438",
+      "id_norma": 207438,
+      "archivo": "23_receptores_fondos_publicos",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 375, de 2003, del Ministerio de Hacienda, que aprueba el Reglamento de la Ley N.º 19.862, que establece registros de las personas jurídicas receptoras de fondos públicos.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=211978",
+      "id_norma": 211978,
+      "archivo": "24_reglamento_receptores_fondos_publicos",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto Ley N.º 2.186, de 1978, del Ministerio de Justicia, que aprueba la Ley Orgánica de Procedimiento de Expropiaciones.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=6848",
+      "id_norma": 6848,
+      "archivo": "25_expropiaciones",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.128, sobre responsabilidad fiscal.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=253645",
+      "id_norma": 253645,
+      "archivo": "26_responsabilidad_fiscal",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.591, sobre royalty a la minería.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1194982",
+      "id_norma": 1194982,
+      "archivo": "27_royalty_mineria",
+      "capitulo": "V. Finanzas territoriales, rentas municipales y patrimonio público"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 18.883, que aprueba el Estatuto Administrativo para Funcionarios Municipales.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=30256",
+      "id_norma": 30256,
+      "archivo": "28_estatuto_funcionarios_municipales",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.378, que establece el Estatuto de Atención Primaria de Salud Municipal.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=30745",
+      "id_norma": 30745,
+      "archivo": "29_estatuto_atencion_primaria",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 29, de 2004, del Ministerio de Hacienda, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.834, sobre Estatuto Administrativo.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=236392",
+      "id_norma": 236392,
+      "archivo": "30_estatuto_administrativo",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1-3.063, de 1980, del Ministerio del Interior, que reglamenta la aplicación del inciso segundo del artículo 38 del Decreto Ley N.º 3.063, de 1979.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=3389",
+      "id_norma": 3389,
+      "archivo": "31_traspaso_servicios_municipalidades",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto Ley N.º 3.551, de 1980, del Ministerio de Hacienda, que fija normas sobre remuneraciones y sobre personal para el sector público.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=7175",
+      "id_norma": 7175,
+      "archivo": "32_remuneraciones_sector_publico",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 1.228, de 1992, del Ministerio del Interior, que aprueba el Reglamento de Calificaciones del Personal Municipal.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=17294",
+      "id_norma": 17294,
+      "archivo": "33_reglamento_calificaciones_municipal",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.296, que establece normas sobre asociaciones de funcionarios de la Administración del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=30663",
+      "id_norma": 30663,
+      "archivo": "34_asociaciones_funcionarios",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.553, que concede asignación de modernización y otros beneficios que indica.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=93381",
+      "id_norma": 93381,
+      "archivo": "35_asignacion_modernizacion",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.803, que establece asignación de mejoramiento de la gestión municipal.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=197351",
+      "id_norma": 197351,
+      "archivo": "36_asignacion_mejoramiento_gestion_municipal",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.882, que regula nueva política de personal a los funcionarios públicos que indica.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=211480",
+      "id_norma": 211480,
+      "archivo": "37_nuevo_trato_alta_direccion_publica",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.305, que mejora condiciones de retiro de los trabajadores del sector público con bajas tasas de reemplazo de sus pensiones.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=282824",
+      "id_norma": 282824,
+      "archivo": "38_bono_poslaboral",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.330, que fomenta que profesionales y técnicos jóvenes presten servicios en las comunas con menores niveles de desarrollo del país.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=287565",
+      "id_norma": 287565,
+      "archivo": "39_profesionales_comunas_menor_desarrollo",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 403, de 2009, del Ministerio del Interior, que aprueba el Reglamento para la aplicación de la Ley N.º 20.330.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1005513",
+      "id_norma": 1005513,
+      "archivo": "40_reglamento_ley_20330",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.135, que otorga beneficios de incentivo al retiro para los funcionarios municipales que indica.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1128418",
+      "id_norma": 1128418,
+      "archivo": "41_incentivo_retiro_municipal",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.922, que modifica disposiciones aplicables a los funcionarios municipales y entrega nuevas competencias a la Subsecretaría de Desarrollo Regional y Administrativo.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1090705",
+      "id_norma": 1090705,
+      "archivo": "42_funcionarios_municipales_ley_20922",
+      "capitulo": "VI. Personal, carrera funcionaria y servicios municipalizados"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 58, de 1997, del Ministerio del Interior, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 19.418, sobre Juntas de Vecinos y demás Organizaciones Comunitarias.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=70040",
+      "id_norma": 70040,
+      "archivo": "43_juntas_de_vecinos",
+      "capitulo": "VII. Participación ciudadana, juntas de vecinos y organizaciones"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1023143",
+      "id_norma": 1023143,
+      "archivo": "44_participacion_ciudadana",
+      "capitulo": "VII. Participación ciudadana, juntas de vecinos y organizaciones"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 2, de 2017, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.700, Orgánica Constitucional sobre Votaciones Populares y Escrutinios.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1108229",
+      "id_norma": 1108229,
+      "archivo": "45_votaciones_populares_escrutinios",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 5, de 2017, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.556, Orgánica Constitucional sobre Sistema de Inscripciones Electorales y Servicio Electoral.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1107717",
+      "id_norma": 1107717,
+      "archivo": "46_inscripciones_electorales_servel",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 4, de 2017, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 18.603, Orgánica Constitucional de los Partidos Políticos.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1107684",
+      "id_norma": 1107684,
+      "archivo": "47_partidos_politicos",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 3, de 2017, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 19.884, Orgánica Constitucional sobre Transparencia, Límite y Control del Gasto Electoral.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1107658",
+      "id_norma": 1107658,
+      "archivo": "48_gasto_electoral",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 1, de 2017, del Ministerio Secretaría General de la Presidencia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 20.640, que establece el sistema de elecciones primarias.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1107657",
+      "id_norma": 1107657,
+      "archivo": "49_elecciones_primarias",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 18.593, de los Tribunales Electorales Regionales.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=29984",
+      "id_norma": 29984,
+      "archivo": "50_tribunales_electorales_regionales",
+      "capitulo": "VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.880, que establece bases de los procedimientos administrativos que rigen los actos de los órganos de la Administración del Estado.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=210676",
+      "id_norma": 210676,
+      "archivo": "51_procedimientos_administrativos",
+      "capitulo": "IX. Procedimiento, contratación y administración electrónica"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.799, sobre documentos electrónicos, firma electrónica y servicios de certificación de dicha firma.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=196640",
+      "id_norma": 196640,
+      "archivo": "52_documentos_firma_electronica",
+      "capitulo": "IX. Procedimiento, contratación y administración electrónica"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestación de Servicios.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=213004",
+      "id_norma": 213004,
+      "archivo": "53_compras_publicas",
+      "capitulo": "IX. Procedimiento, contratación y administración electrónica"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 661, de 2024, del Ministerio de Hacienda, que aprueba el Reglamento de la Ley N.º 19.886, de Bases sobre Contratos Administrativos de Suministro y Prestación de Servicios.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1209290",
+      "id_norma": 1209290,
+      "archivo": "54_reglamento_compras_publicas",
+      "capitulo": "IX. Procedimiento, contratación y administración electrónica"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 2.421, de 1964, del Ministerio de Hacienda, que fija el texto refundido de la Ley de Organización y Atribuciones de la Contraloría General de la República.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=18995",
+      "id_norma": 18995,
+      "archivo": "55_contraloria_general",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Resolución N.º 36, de 2024, de la Contraloría General de la República, que fija normas sobre exención del trámite de toma de razón.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1209651",
+      "id_norma": 1209651,
+      "archivo": "56_exencion_toma_de_razon",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Resolución N.º 3, de 2020, de la Contraloría General de la República, que aprueba normativa del Sistema de Contabilidad General de la Nación para el sector municipal.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1144460",
+      "id_norma": 1144460,
+      "archivo": "57_contabilidad_sector_municipal",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.285, sobre acceso a la información pública.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=276363",
+      "id_norma": 276363,
+      "archivo": "58_acceso_informacion_publica",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 13, de 2009, del Ministerio Secretaría General de la Presidencia, que aprueba el Reglamento de la Ley N.º 20.285, sobre acceso a la información pública.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1001095",
+      "id_norma": 1001095,
+      "archivo": "59_reglamento_acceso_informacion",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.628, sobre protección de la vida privada.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=141599",
+      "id_norma": 141599,
+      "archivo": "60_proteccion_datos_personales",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.730, que regula el lobby y las gestiones que representen intereses particulares ante las autoridades y funcionarios.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1060115",
+      "id_norma": 1060115,
+      "archivo": "61_lobby",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 71, de 2014, del Ministerio Secretaría General de la Presidencia, que aprueba el Reglamento de la Ley N.º 20.730, que regula el lobby y las gestiones que representen intereses particulares ante las autoridades y funcionarios.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1065874",
+      "id_norma": 1065874,
+      "archivo": "62_reglamento_lobby",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.880, sobre probidad en la función pública y prevención de los conflictos de intereses.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1086062",
+      "id_norma": 1086062,
+      "archivo": "63_probidad_conflictos_intereses",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 2, de 2016, del Ministerio Secretaría General de la Presidencia, que aprueba el Reglamento de la Ley N.º 20.880, sobre probidad en la función pública y prevención de los conflictos de intereses.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1091123",
+      "id_norma": 1091123,
+      "archivo": "64_reglamento_probidad",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.592, que establece un estatuto de protección en favor del denunciante.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1195215",
+      "id_norma": 1195215,
+      "archivo": "65_proteccion_denunciante",
+      "capitulo": "X. Transparencia, probidad, control y fiscalización"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto con Fuerza de Ley N.º 458, de 1975, del Ministerio de Vivienda y Urbanismo, que aprueba la nueva Ley General de Urbanismo y Construcciones.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=13560",
+      "id_norma": 13560,
+      "archivo": "66_urbanismo_construcciones",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 469, de 2019, del Ministerio del Interior y Seguridad Pública, que aprueba la Política Nacional de Ordenamiento Territorial.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1162254",
+      "id_norma": 1162254,
+      "archivo": "67_politica_ordenamiento_territorial",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.300, que aprueba Ley sobre Bases Generales del Medio Ambiente.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=30667",
+      "id_norma": 30667,
+      "archivo": "68_bases_medio_ambiente",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 20.920, que establece marco para la gestión de residuos, la responsabilidad extendida del productor y fomento al reciclaje.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1090894",
+      "id_norma": 1090894,
+      "archivo": "69_residuos_rep",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.202, que modifica diversos cuerpos legales con el objetivo de proteger los humedales urbanos.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1141461",
+      "id_norma": 1141461,
+      "archivo": "70_humedales_urbanos",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.364, que establece el Sistema Nacional de Prevención y Respuesta ante Desastres.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1163423",
+      "id_norma": 1163423,
+      "archivo": "71_senapred",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.455, Ley Marco de Cambio Climático.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1177286",
+      "id_norma": 1177286,
+      "archivo": "72_cambio_climatico",
+      "capitulo": "XI. Ordenamiento territorial, urbanismo, ambiente y riesgos"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 21.802, que modifica la Ley N.º 18.695, Orgánica Constitucional de Municipalidades, y otros cuerpos legales, con el objeto de fortalecer la institucionalidad municipal en materia de seguridad pública y prevención del delito.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1221320",
+      "id_norma": 1221320,
+      "archivo": "73_seguridad_municipal",
+      "capitulo": "XII. Seguridad municipal, policía local y otras competencias territoriales"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Decreto N.º 307, de 1978, del Ministerio de Justicia, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 15.231, sobre Organización y Atribuciones de los Juzgados de Policía Local.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=12193",
+      "id_norma": 12193,
+      "archivo": "74_juzgados_policia_local",
+      "capitulo": "XII. Seguridad municipal, policía local y otras competencias territoriales"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 18.287, que establece procedimiento ante los Juzgados de Policía Local.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=29705",
+      "id_norma": 29705,
+      "archivo": "75_procedimiento_policia_local",
+      "capitulo": "XII. Seguridad municipal, policía local y otras competencias territoriales"
+    },
+    {
+      "tipo": "bcn",
+      "marcador": "Ley N.º 19.925, sobre expendio y consumo de bebidas alcohólicas.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=220208",
+      "id_norma": 220208,
+      "archivo": "76_alcoholes",
+      "capitulo": "XII. Seguridad municipal, policía local y otras competencias territoriales"
+    }
+  ]
+}
