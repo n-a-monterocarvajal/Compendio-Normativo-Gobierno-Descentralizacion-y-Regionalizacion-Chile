@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "actualizado_utc": "2026-11-04T19:55:52+00:00",
+  "actualizado_utc": "2026-11-14T17:24:03+00:00",
   "fuentes": {
     "242302": {
       "id_norma": "242302",
@@ -4124,7 +4124,7 @@
     },
     "1023143": {
       "id_norma": "1023143",
-      "marcador": "Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública.",
+      "marcador": "Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública. Selección: títulos I a III y título V, de disposiciones transitorias.",
       "titulo_bcn": "SOBRE ASOCIACIONES Y PARTICIPACIÓN CIUDADANA EN LA GESTIÓN PÚBLICA",
       "vigencia_actual": {
         "desde": "2011-02-16",
@@ -4147,13 +4147,14 @@
         "presente": false,
         "alertas": []
       },
-      "huella": "49fe2f45e9ce6b43b54177c0e304a98b6fba8c55330957365184f3d13feba839",
+      "huella": "558e753f266bbb467e0b2a2936782fd839048b9eb623fabba7cf236b61b754fd",
       "estado": {
         "derogado": false,
         "derogacion_tacita": [],
         "alertas": []
       },
-      "version_vigente_indicada": ""
+      "version_vigente_indicada": "",
+      "id_parte": "9111218,9111235,9111244,9111270"
     },
     "1108229": {
       "id_norma": "1108229",
