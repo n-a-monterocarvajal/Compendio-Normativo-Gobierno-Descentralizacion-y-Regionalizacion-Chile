@@ -349,9 +349,15 @@
     },
     {
       "tipo": "bcn",
-      "marcador": "Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública.",
-      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1023143",
+      "marcador": "Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública. Selección: títulos I a III y título V, de disposiciones transitorias.",
+      "url": "https://www.bcn.cl/leychile/navegar?idNorma=1023143&idParte=9111218",
       "id_norma": 1023143,
+      "id_parte": [
+        9111218,
+        9111235,
+        9111244,
+        9111270
+      ],
       "archivo": "44_participacion_ciudadana",
       "capitulo": "VII. Participación ciudadana, juntas de vecinos y organizaciones"
     },

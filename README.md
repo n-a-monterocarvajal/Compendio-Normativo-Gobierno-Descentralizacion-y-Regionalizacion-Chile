@@ -76,7 +76,7 @@ Las normas se agrupan en capítulos temáticos, que el PDF reproduce en su índi
 ### VII. Participación ciudadana, juntas de vecinos y organizaciones
 
 43. [Decreto N.º 58, de 1997, del Ministerio del Interior, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 19.418, sobre Juntas de Vecinos y demás Organizaciones Comunitarias.](https://www.bcn.cl/leychile/navegar?idNorma=70040)
-44. [Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública.](https://www.bcn.cl/leychile/navegar?idNorma=1023143)
+44. [Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública. Selección: títulos I a III y título V, de disposiciones transitorias.](https://www.bcn.cl/leychile/navegar?idNorma=1023143&idParte=9111218)
 
 ### VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral
 
@@ -133,6 +133,8 @@ El compendio reúne cuerpos normativos permanentes en su texto refundido, cuando
 
 La Ley N.º 21.719, que regula la protección y el tratamiento de los datos personales, tampoco se incluye por separado: reemplaza el contenido de la Ley N.º 19.628, que el compendio incluye y que se actualizará cuando las modificaciones entren en vigencia el 1 de diciembre de 2026.
 
+*De las leyes que además modifican otras normas se incluye una selección: sus artículos permanentes con contenido propio y sus disposiciones transitorias. Las modificaciones ya están incorporadas en los textos de las normas que reforman. Cada una se indica en el índice como «Selección».*
+
 ### Nota sobre normas consideradas y no incluidas
 
 Las siguientes normas formaron parte de la selección de trabajo, pero quedaron fuera del compendio:
@@ -176,7 +178,7 @@ Ley Chile también corrige de tanto en tanto los límites de fecha entre version
 
 **Avisos de falla:** la generación, la prueba semanal de descarga de los lunes y la revisión diaria abren un *issue* cuando fallan, o comentan el que ya esté abierto. La revisión diaria no avisa cuando Ley Chile simplemente no respondió (timeout, conexión, HTTP 429 o 5xx), porque la revisión del día siguiente lo vuelve a intentar sola; sí avisa cuando respondió con una forma que no sabe leer. Cada aviso incluye el estado de GitHub en ese momento, consultado en [githubstatus.com](https://www.githubstatus.com), para distinguir una caída de GitHub de una falla propia.
 
-El obtenedor, el ensamblador PDF, el monitor de versiones y sus decisiones técnicas se mantienen en [GeneradorCompendiosLeyChile](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile). Este repositorio fija una revisión inmutable de ese motor —actualmente la [versión 0.1.11](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile/releases/tag/v0.1.11), declarada en `app/requirements.txt`— para que sus actualizaciones sean explícitas y auditables.
+El obtenedor, el ensamblador PDF, el monitor de versiones y sus decisiones técnicas se mantienen en [GeneradorCompendiosLeyChile](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile). Este repositorio fija una revisión inmutable de ese motor —actualmente la [versión 0.1.12](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile/releases/tag/v0.1.12), declarada en `app/requirements.txt`— para que sus actualizaciones sean explícitas y auditables.
 
 ## 🔐 Licencia
 
