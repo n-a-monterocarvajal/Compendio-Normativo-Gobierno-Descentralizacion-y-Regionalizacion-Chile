@@ -76,7 +76,8 @@ Las normas se agrupan en capítulos temáticos, que el PDF reproduce en su índi
 ### VII. Participación ciudadana, juntas de vecinos y organizaciones
 
 43. [Decreto N.º 58, de 1997, del Ministerio del Interior, que fija el texto refundido, coordinado y sistematizado de la Ley N.º 19.418, sobre Juntas de Vecinos y demás Organizaciones Comunitarias.](https://www.bcn.cl/leychile/navegar?idNorma=70040)
-44. [Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública. Selección: títulos I a III y título V, de disposiciones transitorias.](https://www.bcn.cl/leychile/navegar?idNorma=1023143&idParte=9111218)
+44. ◐ [Ley N.º 20.500, sobre asociaciones y participación ciudadana en la gestión pública.](https://www.bcn.cl/leychile/navegar?idNorma=1023143&idParte=9111218)
+    - *Selección: títulos I a III y título V, de disposiciones transitorias.*
 
 ### VIII. Elecciones subnacionales, partidos, financiamiento y justicia electoral
 
@@ -125,6 +126,8 @@ Las normas se agrupan en capítulos temáticos, que el PDF reproduce en su índi
 75. [Ley N.º 18.287, que establece procedimiento ante los Juzgados de Policía Local.](https://www.bcn.cl/leychile/navegar?idNorma=29705)
 76. [Ley N.º 19.925, sobre expendio y consumo de bebidas alcohólicas.](https://www.bcn.cl/leychile/navegar?idNorma=220208)
 
+*◐ Norma de la que el compendio incluye solo una selección de su articulado, indicada bajo su título. Las demás normas se incluyen completas.*
+
 *El alcance de la selección sigue las materias de la [Comisión de Gobierno, Descentralización y Regionalización del Senado](https://www.senado.cl/actividad-legislativa/comisiones/185). El índice se basa en el [Compendio de Legislación Municipal de Chile (Tirant lo Blanch, 3.ª ed., 2026)](https://www.editorialmetropolitana.cl/producto/compendio-de-legislacion-municipal-de-chile-3edicion/), el [Compendio de Gestión Pública de la BCN](https://www.bcn.cl/leychile/Consulta/listado_n_sel?_grupo_aporte=1737&agr=&comp=3&sub=) y la [recopilación de normas para la Administración del Estado de la Contraloría General de la República](https://www.ceacgr.cl/CEA/publicaciones.html).*
 
 ### Criterios de selección
@@ -133,7 +136,7 @@ El compendio reúne cuerpos normativos permanentes en su texto refundido, cuando
 
 La Ley N.º 21.719, que regula la protección y el tratamiento de los datos personales, tampoco se incluye por separado: reemplaza el contenido de la Ley N.º 19.628, que el compendio incluye y que se actualizará cuando las modificaciones entren en vigencia el 1 de diciembre de 2026.
 
-*De las leyes que además modifican otras normas se incluye una selección: sus artículos permanentes con contenido propio y sus disposiciones transitorias. Las modificaciones ya están incorporadas en los textos de las normas que reforman. Cada una se indica en el índice como «Selección».*
+*De las leyes que además modifican otras normas se incluye una selección: sus artículos permanentes con contenido propio y sus disposiciones transitorias. Las modificaciones ya están incorporadas en los textos de las normas que reforman. En el índice se marcan con «◐» y, debajo, se indica la selección incluida.*
 
 ### Nota sobre normas consideradas y no incluidas
 
@@ -178,7 +181,7 @@ Ley Chile también corrige de tanto en tanto los límites de fecha entre version
 
 **Avisos de falla:** la generación, la prueba semanal de descarga de los lunes y la revisión diaria abren un *issue* cuando fallan, o comentan el que ya esté abierto. La revisión diaria no avisa cuando Ley Chile simplemente no respondió (timeout, conexión, HTTP 429 o 5xx), porque la revisión del día siguiente lo vuelve a intentar sola; sí avisa cuando respondió con una forma que no sabe leer. Cada aviso incluye el estado de GitHub en ese momento, consultado en [githubstatus.com](https://www.githubstatus.com), para distinguir una caída de GitHub de una falla propia.
 
-El obtenedor, el ensamblador PDF, el monitor de versiones y sus decisiones técnicas se mantienen en [GeneradorCompendiosLeyChile](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile). Este repositorio fija una revisión inmutable de ese motor —actualmente la [versión 0.1.12](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile/releases/tag/v0.1.12), declarada en `app/requirements.txt`— para que sus actualizaciones sean explícitas y auditables.
+El obtenedor, el ensamblador PDF, el monitor de versiones y sus decisiones técnicas se mantienen en [GeneradorCompendiosLeyChile](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile). Este repositorio fija una revisión inmutable de ese motor —actualmente la [versión 0.1.13](https://github.com/n-a-monterocarvajal/GeneradorCompendiosLeyChile/releases/tag/v0.1.13), declarada en `app/requirements.txt`— para que sus actualizaciones sean explícitas y auditables.
 
 ## 🔐 Licencia
 
