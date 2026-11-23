@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es-CL">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compendio de Gobierno, Descentralización y Regionalización · Leer en línea</title>
+  <meta name="description" content="Visor en línea, con índice y buscador, del compendio normativo de Gobierno, Descentralización y Regionalización de Chile.">
+  <link rel="stylesheet" href="pdfjs/web/pdf_viewer.css">
+  <link rel="stylesheet" href="visor.css">
+  <script type="module" src="visor.js"></script>
+</head>
+<body>
+  <header class="barra">
+    <button type="button" class="boton icono" id="alternar-panel" aria-controls="panel" aria-expanded="true" title="Mostrar u ocultar el panel">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      <span class="sr">Panel</span>
+    </button>
+    <div class="titulo">
+      <h1 id="titulo">Compendio normativo de Gobierno, Descentralización y Regionalización de Chile</h1>
+      <p class="ubicacion" id="ubicacion" aria-live="polite"></p>
+    </div>
+    <div class="controles">
+      <button type="button" class="boton icono" id="abrir-busqueda" title="Buscar (Ctrl+F)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+        <span class="sr">Buscar</span>
+      </button>
+      <label class="pagina">
+        <span class="sr">Página</span>
+        <input id="pagina" type="text" inputmode="numeric" value="1" aria-label="Página actual">
+        <span id="total-paginas">/ …</span>
+      </label>
+      <div class="zoom" role="group" aria-label="Tamaño">
+        <button type="button" class="boton icono" id="alejar" title="Alejar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg><span class="sr">Alejar</span>
+        </button>
+        <select id="escala" aria-label="Tamaño de la página">
+          <option value="page-width">Ancho de página</option>
+          <option value="page-fit">Página completa</option>
+          <option value="0.75">75 %</option>
+          <option value="1">100 %</option>
+          <option value="1.25">125 %</option>
+          <option value="1.5">150 %</option>
+          <option value="2">200 %</option>
+          <option value="personalizada" hidden></option>
+        </select>
+        <button type="button" class="boton icono" id="acercar" title="Acercar">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg><span class="sr">Acercar</span>
+        </button>
+      </div>
+      <a class="boton" id="descargar" href="https://github.com/n-a-monterocarvajal/Compendio-Normativo-Gobierno-Descentralizacion-y-Regionalizacion-Chile/releases/latest" title="Descargar el PDF desde el release">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span class="texto-boton">Descargar</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="cuerpo">
+    <aside class="panel" id="panel">
+      <div class="pestanas" role="tablist">
+        <button type="button" role="tab" id="pestana-indice" aria-controls="vista-indice" aria-selected="true">Índice</button>
+        <button type="button" role="tab" id="pestana-buscar" aria-controls="vista-buscar" aria-selected="false">Buscar</button>
+      </div>
+
+      <section class="vista" id="vista-indice" role="tabpanel" aria-labelledby="pestana-indice">
+        <nav id="indice" aria-label="Índice del compendio"><p class="aviso">Cargando índice…</p></nav>
+      </section>
+
+      <section class="vista" id="vista-buscar" role="tabpanel" aria-labelledby="pestana-buscar" hidden>
+        <form class="buscador" id="buscador" role="search">
+          <input id="consulta" type="search" placeholder="Buscar en todo el compendio" autocomplete="off" spellcheck="false" aria-describedby="estado-busqueda">
+          <div class="opciones">
+            <label><input type="checkbox" id="solo-norma"> Solo en la norma actual</label>
+            <label><input type="checkbox" id="palabra-completa"> Palabra completa</label>
+          </div>
+          <div class="navegacion-resultados">
+            <p id="estado-busqueda" aria-live="polite">Escriba al menos dos caracteres. No distingue mayúsculas ni tildes.</p>
+            <div class="flechas">
+              <button type="button" class="boton icono" id="anterior" title="Anterior (Mayús+Enter)" disabled>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg><span class="sr">Anterior</span>
+              </button>
+              <button type="button" class="boton icono" id="siguiente" title="Siguiente (Enter)" disabled>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span class="sr">Siguiente</span>
+              </button>
+            </div>
+          </div>
+        </form>
+        <ol class="resultados" id="resultados"></ol>
+      </section>
+
+      <footer class="pie-panel" id="pie-panel"></footer>
+    </aside>
+
+    <main class="lienzo">
+      <div class="carga" id="carga" role="status"><span id="texto-carga">Abriendo el compendio…</span><progress id="progreso"></progress></div>
+      <div id="contenedor-visor" class="contenedor-visor" tabindex="0">
+        <div id="visor" class="pdfViewer"></div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

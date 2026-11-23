@@ -1,0 +1,204 @@
+:root {
+  --fondo: #eef1f5;
+  --superficie: #ffffff;
+  --superficie-2: #f6f8fb;
+  --borde: #d6dce5;
+  --texto: #1b2533;
+  --texto-suave: #5a6677;
+  --acento: #1f4e8c;
+  --acento-suave: #e3ecf8;
+  --marca: rgb(255 196 0 / 0.45);
+  --marca-actual: rgb(255 120 0 / 0.6);
+  --ancho-panel: 360px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fondo: #12161c;
+    --superficie: #1b2129;
+    --superficie-2: #222a34;
+    --borde: #313b48;
+    --texto: #e6ebf2;
+    --texto-suave: #9aa6b6;
+    --acento: #8db7ef;
+    --acento-suave: #233349;
+    color-scheme: dark;
+  }
+}
+
+/* Solo la interfaz propia: las páginas de PDF.js necesitan su modelo de caja original. */
+.barra, .barra *, .panel, .panel *, .carga, .carga * { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: var(--texto);
+  background: var(--fondo);
+}
+
+body { display: flex; flex-direction: column; overflow: hidden; }
+
+.sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Barra superior */
+.barra {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 12px;
+  background: var(--superficie);
+  border-bottom: 1px solid var(--borde);
+  min-height: 56px;
+}
+.titulo { flex: 1; min-width: 0; }
+.titulo h1 {
+  margin: 0; font-size: 15px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ubicacion {
+  margin: 0; font-size: 13px; color: var(--texto-suave);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.controles { display: flex; align-items: center; gap: 8px; }
+
+.boton {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 34px; padding: 0 10px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--superficie); color: var(--texto);
+  font: inherit; font-size: 14px; text-decoration: none; cursor: pointer;
+}
+.boton:hover { background: var(--superficie-2); }
+.boton:disabled { opacity: .45; cursor: default; }
+.boton.icono { width: 34px; padding: 0; justify-content: center; }
+.boton:focus-visible, input:focus-visible, select:focus-visible, .entrada:focus-visible {
+  outline: 2px solid var(--acento); outline-offset: 1px;
+}
+
+.pagina { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--texto-suave); white-space: nowrap; }
+.pagina input {
+  width: 4.2em; height: 34px; text-align: right;
+  border: 1px solid var(--borde); border-radius: 8px; padding: 0 8px;
+  background: var(--superficie); color: var(--texto); font: inherit;
+}
+.zoom { display: inline-flex; align-items: center; gap: 4px; }
+.zoom select {
+  height: 34px; border: 1px solid var(--borde); border-radius: 8px; padding: 0 6px;
+  background: var(--superficie); color: var(--texto); font: inherit; font-size: 14px;
+}
+
+/* Cuerpo */
+.cuerpo { flex: 1; display: flex; min-height: 0; }
+
+.panel {
+  width: var(--ancho-panel); flex: none;
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--superficie); border-right: 1px solid var(--borde);
+}
+.panel.oculto { display: none; }
+
+.pestanas { display: flex; border-bottom: 1px solid var(--borde); }
+.pestanas button {
+  flex: 1; padding: 10px; border: 0; background: none; color: var(--texto-suave);
+  font: inherit; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent;
+}
+.pestanas button[aria-selected="true"] { color: var(--acento); border-bottom-color: var(--acento); }
+
+.vista { flex: 1; overflow: auto; min-height: 0; }
+.vista[hidden] { display: none; }
+#vista-buscar:not([hidden]) { display: flex; flex-direction: column; overflow: hidden; }
+
+.aviso { padding: 16px; color: var(--texto-suave); margin: 0; }
+
+/* Índice */
+#indice { padding: 6px 0 16px; font-size: 14px; }
+#indice ul { list-style: none; margin: 0; padding: 0; }
+#indice ul ul { padding-left: 14px; }
+#indice li { margin: 0; }
+.fila { display: flex; align-items: flex-start; }
+.desplegar {
+  flex: none; width: 24px; height: 28px; border: 0; background: none; padding: 0;
+  color: var(--texto-suave); cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+}
+.desplegar svg { width: 14px; height: 14px; transition: transform .15s; }
+.desplegar[aria-expanded="true"] svg { transform: rotate(90deg); }
+.desplegar.vacio { visibility: hidden; }
+.entrada {
+  flex: 1; min-width: 0; display: flex; gap: 8px; justify-content: space-between;
+  padding: 4px 10px 4px 2px; border: 0; background: none; color: inherit; text-align: left;
+  font: inherit; cursor: pointer; border-radius: 6px;
+}
+.entrada:hover { background: var(--superficie-2); }
+.entrada .pag { flex: none; color: var(--texto-suave); font-variant-numeric: tabular-nums; font-size: 12px; padding-top: 2px; }
+.nivel-1 > .fila .entrada { font-weight: 700; color: var(--acento); }
+.nivel-2 > .fila .entrada { font-weight: 600; }
+.entrada.actual { background: var(--acento-suave); }
+
+/* Buscador */
+.buscador { padding: 12px; border-bottom: 1px solid var(--borde); display: grid; gap: 8px; }
+.buscador input[type="search"] {
+  width: 100%; height: 38px; padding: 0 12px;
+  border: 1px solid var(--borde); border-radius: 8px;
+  background: var(--superficie-2); color: var(--texto); font: inherit; font-size: 15px;
+}
+.opciones { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 13px; color: var(--texto-suave); }
+.opciones label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+.navegacion-resultados { display: flex; align-items: center; gap: 8px; }
+.navegacion-resultados p { flex: 1; margin: 0; font-size: 13px; color: var(--texto-suave); }
+.flechas { display: flex; gap: 4px; }
+
+.resultados { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+.resultados li { border-bottom: 1px solid var(--borde); }
+.resultado {
+  display: block; width: 100%; padding: 9px 12px; border: 0; background: none;
+  color: inherit; text-align: left; font: inherit; font-size: 13.5px; cursor: pointer;
+}
+.resultado:hover { background: var(--superficie-2); }
+.resultado.actual { background: var(--acento-suave); }
+.resultado .donde {
+  display: flex; gap: 8px; justify-content: space-between;
+  font-size: 12px; color: var(--texto-suave); margin-bottom: 3px;
+}
+.resultado .donde span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.resultado .donde span:last-child { flex: none; font-variant-numeric: tabular-nums; }
+.resultado mark { background: var(--marca); color: inherit; border-radius: 2px; padding: 0 1px; }
+.mas { padding: 12px; text-align: center; }
+
+.pie-panel { padding: 8px 12px; border-top: 1px solid var(--borde); font-size: 12px; color: var(--texto-suave); }
+.pie-panel a { color: var(--acento); }
+
+/* Lienzo del PDF */
+.lienzo { flex: 1; position: relative; min-width: 0; }
+.contenedor-visor { position: absolute; inset: 0; overflow: auto; outline: none; }
+.pdfViewer { padding: 12px 0 24px; }
+.pdfViewer .page { box-shadow: 0 1px 4px rgb(0 0 0 / .18); }
+
+.carga {
+  position: absolute; z-index: 5; top: 12px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 10px;
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: 10px;
+  padding: 8px 14px; font-size: 13px; box-shadow: 0 4px 16px rgb(0 0 0 / .12);
+}
+.carga[hidden] { display: none; }
+.carga progress { width: 140px; }
+
+::highlight(busqueda) { background-color: var(--marca); }
+::highlight(busqueda-actual) { background-color: var(--marca-actual); }
+
+/* Pantallas angostas: el panel se superpone al documento */
+@media (max-width: 760px) {
+  .barra { gap: 6px; padding: 6px 8px; flex-wrap: wrap; }
+  .titulo { order: 1; flex-basis: calc(100% - 46px); }
+  .controles { order: 2; width: 100%; justify-content: space-between; }
+  .texto-boton { display: none; }
+  .zoom select { display: none; }
+  .panel {
+    position: fixed; z-index: 10; top: var(--alto-barra, 0px); bottom: 0; left: 0;
+    width: min(92vw, var(--ancho-panel)); box-shadow: 0 0 24px rgb(0 0 0 / .3);
+  }
+}
