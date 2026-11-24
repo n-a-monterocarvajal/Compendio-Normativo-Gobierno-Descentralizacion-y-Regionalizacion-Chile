@@ -183,6 +183,12 @@ button { font: inherit; color: inherit; }
 }
 .indice-panel { width: var(--ancho-indice); border-right: 1px solid var(--borde); }
 .indice-panel.oculto { display: none; }
+/* Como el visor oficial de PDF.js, el documento cambia de ancho una sola vez, al terminar
+   el deslizamiento: al abrir, el índice flota encima mientras entra; al cerrar, se desliza
+   fuera conservando su espacio y recién al final se oculta. */
+.indice-panel { position: relative; z-index: 12; transition: transform .2s cubic-bezier(.2, .8, .2, 1); }
+.indice-panel.flotante { position: absolute; top: 0; bottom: 0; left: 0; box-shadow: var(--sombra-alta); }
+.indice-panel.fuera { transform: translateX(-100%); }
 .resultados-panel { width: var(--ancho-resultados); border-left: 1px solid var(--borde); }
 .resultados-panel[hidden] { display: none; }
 .asa { display: none; }
