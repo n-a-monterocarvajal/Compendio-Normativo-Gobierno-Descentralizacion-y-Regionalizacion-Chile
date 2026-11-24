@@ -95,7 +95,7 @@ button { font: inherit; color: inherit; }
 
 /* Barra superior */
 .barra {
-  display: grid; grid-template-columns: minmax(200px, 1fr) minmax(320px, 560px) minmax(200px, 1fr);
+  display: grid; grid-template-columns: minmax(200px, 1fr) minmax(320px, 560px) minmax(200px, auto);
   align-items: center; gap: 16px;
   height: var(--alto-barra); padding: 0 14px;
   background: var(--superficie);
@@ -117,6 +117,7 @@ button { font: inherit; color: inherit; }
 .icono:disabled { opacity: .35; cursor: default; background: transparent; }
 .icono.chico { width: 28px; height: 28px; border-radius: 7px; }
 .icono[aria-expanded="true"] { color: var(--acento); }
+svg.relleno { fill: currentColor; stroke: none; }
 
 /* Buscador estilo barra de comandos */
 .buscador {
@@ -143,6 +144,7 @@ button { font: inherit; color: inherit; }
 .buscador.activo .atajo, .buscador:focus-within .atajo { display: none; }
 
 .herramientas { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+.herramientas > * { flex: none; }
 .pastilla {
   display: inline-flex; align-items: center; height: 36px; padding: 0 4px;
   border: 1px solid var(--borde); border-radius: 10px; background: var(--superficie);

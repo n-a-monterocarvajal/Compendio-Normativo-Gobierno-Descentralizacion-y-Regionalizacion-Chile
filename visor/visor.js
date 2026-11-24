@@ -240,7 +240,8 @@ async function cargarMeta() {
   const version = meta.url_release ? `<a href="${escapar(meta.url_release)}">${escapar(meta.tag || meta.archivo)}</a>` : escapar(meta.archivo);
   $("pie").innerHTML =
     `${numero.format(estado.normas.length)} normas · ${numero.format(meta.paginas)} páginas<br>` +
-    `Versión ${version}${fecha ? `, publicada el ${escapar(fecha)}` : ""}.`;
+    `Versión ${version}${fecha ? `, publicada el ${escapar(fecha)}` : ""}.<br>` +
+    `<a href="${escapar($("repositorio").href)}">Repositorio en GitHub</a>`;
 
   construirIndice();
   actualizarUbicacion(viewer.currentPageNumber || 1);
