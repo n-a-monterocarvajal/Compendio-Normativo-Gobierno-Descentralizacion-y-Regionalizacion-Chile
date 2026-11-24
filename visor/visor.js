@@ -710,9 +710,34 @@ function enfocarActual() {
 // ---------------------------------------------------------------------------
 // Paneles y teclado
 // ---------------------------------------------------------------------------
+const sinMovimiento = matchMedia("(prefers-reduced-motion: reduce)");
+let finDeslizamiento = null;
 function mostrarIndice(visible) {
-  $("indice-panel").classList.toggle("oculto", !visible);
+  const panel = $("indice-panel");
   $("alternar-indice").setAttribute("aria-expanded", String(visible));
+  const visibleAhora = !panel.classList.contains("oculto") && !panel.classList.contains("fuera");
+  if (movil.matches || sinMovimiento.matches || visible === visibleAhora) {
+    panel.classList.remove("flotante", "fuera");
+    panel.classList.toggle("oculto", !visible);
+    actualizarVelo();
+    return;
+  }
+  // Escritorio: el panel se desliza con transform y el documento cambia de ancho una sola
+  // vez, al terminar (igual que el panel lateral del visor oficial de PDF.js).
+  clearTimeout(finDeslizamiento);
+  const terminar = () => {
+    panel.classList.remove("flotante", "fuera");
+    panel.classList.toggle("oculto", !visible);
+  };
+  if (visible) {
+    panel.classList.remove("oculto");
+    panel.classList.add("flotante", "fuera");
+    panel.getBoundingClientRect(); // fija la posición inicial antes de animar
+    requestAnimationFrame(() => panel.classList.remove("fuera"));
+  } else {
+    panel.classList.add("fuera");
+  }
+  finDeslizamiento = setTimeout(terminar, 220);
   actualizarVelo();
 }
 function actualizarVelo() {
