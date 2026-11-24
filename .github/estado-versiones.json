@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "actualizado_utc": "2026-11-14T17:24:03+00:00",
+  "actualizado_utc": "2026-11-24T21:38:22+00:00",
   "fuentes": {
     "242302": {
       "id_norma": "242302",
@@ -5083,7 +5083,7 @@
       "titulo_bcn": "SOBRE ACCESO A LA INFORMACIÓN PÚBLICA",
       "vigencia_actual": {
         "desde": "2025-07-11",
-        "hasta": "2026-11-30",
+        "hasta": "2027-10-14",
         "tipo": "2",
         "descripcion": "Última Versión"
       },
@@ -5108,12 +5108,12 @@
         },
         {
           "desde": "2025-07-11",
-          "hasta": "2026-11-30",
+          "hasta": "2027-10-14",
           "tipo": "2",
           "descripcion": "Última Versión"
         },
         {
-          "desde": "2026-12-01",
+          "desde": "2027-10-15",
           "hasta": "",
           "tipo": "7",
           "descripcion": "Con Vigencia Diferida por Fecha"
@@ -5128,11 +5128,11 @@
           {
             "clase": "diferido",
             "texto": "Tiene texto diferido",
-            "mensaje": "Con modificaciones que regirán a contar del 01-DIC-2026"
+            "mensaje": "Con modificaciones que regirán a contar del 15-OCT-2027"
           }
         ]
       },
-      "huella": "fc39f959dfbe0cb5e3927940cbfbf1180a1bd48b9facfcc40d3d90892691fe81",
+      "huella": "32856eeeaf7ff4bf6521660662ab8315e7d8827cc586fb97df74c2010f5cac5a",
       "estado": {
         "derogado": false,
         "derogacion_tacita": [],
@@ -5228,6 +5228,12 @@
         },
         {
           "desde": "2026-12-01",
+          "hasta": "2027-10-14",
+          "tipo": "7",
+          "descripcion": "Con Vigencia Diferida por Fecha"
+        },
+        {
+          "desde": "2027-10-15",
           "hasta": "",
           "tipo": "7",
           "descripcion": "Con Vigencia Diferida por Fecha"
@@ -5242,11 +5248,11 @@
           {
             "clase": "diferido",
             "texto": "Tiene texto diferido",
-            "mensaje": "Entra en vigencia el 01-DIC-2026"
+            "mensaje": "Con modificaciones que regirán a contar del 15-OCT-2027<br />Entra en vigencia el 01-DIC-2026"
           }
         ]
       },
-      "huella": "6f9dd7a7b1eb951f0dba5ae7315986cd8d2d27effe07db51235c4ecfa1954045",
+      "huella": "9b6aa1d95c23e221f7e566df1daa705746e41c97fdabc92f15eddc9b59d76770",
       "estado": {
         "derogado": false,
         "derogacion_tacita": [],
