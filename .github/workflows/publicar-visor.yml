@@ -35,7 +35,7 @@ jobs:
     timeout-minutes: 20
     environment:
       name: github-pages
-      url: ${{ steps.despliegue.outputs.page_url }}
+      url: ${{ steps.intento1.outputs.page_url || steps.intento2.outputs.page_url }}
 
     steps:
       - name: Obtener repositorio
@@ -105,13 +105,27 @@ jobs:
       - name: Configurar Pages
         uses: actions/configure-pages@v6
 
-      # upload-pages-artifact@v5 sube con upload-artifact@v7, cuyo artefacto no ve
-      # deploy-pages@v5 ("No artifacts named github-pages"); v4 usa upload-artifact@v4.
       - name: Subir el sitio
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: sitio
 
+      # El artefacto recién subido a veces tarda unos segundos en aparecer en el listado
+      # que consulta deploy-pages ("No artifacts named github-pages"): se espera y,
+      # si aun así falla, se reintenta una vez.
+      - name: Esperar que el artefacto quede disponible
+        run: sleep 20
+
       - name: Publicar en GitHub Pages
-        id: despliegue
+        id: intento1
+        continue-on-error: true
+        uses: actions/deploy-pages@v5
+
+      - name: Esperar antes de reintentar
+        if: steps.intento1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Publicar en GitHub Pages (reintento)
+        id: intento2
+        if: steps.intento1.outcome == 'failure'
         uses: actions/deploy-pages@v5
