@@ -69,6 +69,10 @@ function escapar(t) {
   return t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 }
 const tituloLegible = (t) => t.replace(/^ART[ÍíI]CULO\b/, "Artículo").replace(/\s+/g, " ").trim();
+// Primer hijo de una norma incluida en parte: «Selección: títulos I a III…».
+const esSeleccion = (t) => t.startsWith("Selección:");
+// «◐» (norma incluida en parte) con una fuente que de seguro trae el símbolo.
+const conSimbolo = (html) => html.replace(/◐/g, '<span class="parcial" title="Norma incluida en parte">◐</span>');
 const recortar = (t, n) => (t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t);
 
 // Forma breve de una división para la ruta: «TITULO SEGUNDO DE LA …» → «Título segundo».
@@ -99,6 +103,7 @@ const estado = {
   meta: null,
   marcadores: [], // {nivel, titulo, pagina, offset, padre}
   normas: [], // índices de marcadores de nivel 2
+  notaSeleccion: "", // nota final del PDF que explica «◐»
   textos: null,
   planos: null,
   cargaTexto: null,
@@ -226,8 +231,20 @@ async function abrirDocumento() {
 async function cargarMeta() {
   const meta = await (await fetch(RUTAS.meta)).json();
   estado.meta = meta;
+  // La nota final del motor que explica «◐» no es una norma: va al pie del índice.
+  let marcadores = meta.marcadores;
+  const ultimo = marcadores.at(-1);
+  if (ultimo && ultimo[0] === 1 && ultimo[1].startsWith("◐ ") && !/N\.º/.test(ultimo[1])) {
+    estado.notaSeleccion = ultimo[1].slice(2);
+    marcadores = marcadores.slice(0, -1);
+  }
+  // Compendios sin capítulos (normas en el nivel 1): se bajan un nivel, así las normas
+  // quedan siempre en el nivel 2 y el resto del visor no distingue entre ambos casos.
+  const conCapitulos = marcadores.some(([nivel, titulo]) => nivel === 1 && /^[IVXLC]+\.\s/.test(titulo));
+  const desfase = conCapitulos ? 0 : 1;
   const pila = [];
-  estado.marcadores = meta.marcadores.map(([nivel, titulo, pagina], i) => {
+  estado.marcadores = marcadores.map(([nivelOriginal, titulo, pagina], i) => {
+    const nivel = nivelOriginal + desfase;
     while (pila.length && pila.at(-1).nivel >= nivel) pila.pop();
     const m = { nivel, titulo, pagina, offset: 0, padre: pila.length ? pila.at(-1).i : -1, i };
     pila.push(m);
@@ -241,7 +258,8 @@ async function cargarMeta() {
   $("pie").innerHTML =
     `${numero.format(estado.normas.length)} normas · ${numero.format(meta.paginas)} páginas<br>` +
     `Versión ${version}${fecha ? `, publicada el ${escapar(fecha)}` : ""}.<br>` +
-    `<a href="${escapar($("repositorio").href)}">Repositorio en GitHub</a>`;
+    `<a href="${escapar($("repositorio").href)}">Repositorio en GitHub</a>` +
+    (estado.notaSeleccion ? `<span class="nota-seleccion">${conSimbolo("◐")} ${escapar(estado.notaSeleccion)}</span>` : "");
 
   construirIndice();
   actualizarUbicacion(viewer.currentPageNumber || 1);
@@ -269,8 +287,9 @@ function contenidoEntrada(m) {
   if (m.nivel === 2) {
     const corto = nombreCorto(m.titulo);
     const resto = m.titulo.slice(corto.length).replace(/^[,.\s]+/, "");
-    if (resto) return `<span><span class="norma-nombre">${escapar(corto)}</span><span class="norma-materia">${escapar(resto)}</span></span>`;
+    if (resto) return `<span><span class="norma-nombre">${conSimbolo(escapar(corto))}</span><span class="norma-materia">${escapar(resto)}</span></span>`;
   }
+  if (esSeleccion(m.titulo)) return `<span class="seleccion">${escapar(m.titulo)}</span>`;
   return `<span>${escapar(tituloLegible(m.titulo))}</span>`;
 }
 
@@ -347,7 +366,7 @@ function filtrarIndice() {
     const li = document.createElement("li");
     li.className = "nivel-2 filtrada";
     const capitulo = m.padre >= 0 ? estado.marcadores[m.padre].titulo : "";
-    li.innerHTML = `<div class="fila"><button type="button" class="entrada" title="${escapar(m.titulo)}"><span>${escapar(m.titulo)}<span class="capitulo-filtro">${escapar(capitulo)}</span></span><span class="pag">${numero.format(m.pagina)}</span></button></div>`;
+    li.innerHTML = `<div class="fila"><button type="button" class="entrada" title="${escapar(m.titulo)}"><span>${conSimbolo(escapar(m.titulo))}<span class="capitulo-filtro">${escapar(capitulo)}</span></span><span class="pag">${numero.format(m.pagina)}</span></button></div>`;
     li.querySelector("button").addEventListener("click", () => {
       irAPagina(m.pagina);
       if (movil.matches) mostrarIndice(false);
@@ -385,7 +404,7 @@ function rutaDe(i) {
   const partes = [];
   for (let j = i; j >= 0 && estado.marcadores[j].nivel > 2; j = estado.marcadores[j].padre) {
     const t = estado.marcadores[j].titulo;
-    if (t !== "Encabezado") partes.unshift(tituloLegible(t));
+    if (t !== "Encabezado" && !esSeleccion(t)) partes.unshift(tituloLegible(t));
   }
   return partes;
 }
