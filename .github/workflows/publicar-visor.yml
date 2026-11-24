@@ -26,7 +26,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PDFJS_VERSION: 5.7.284
+  PDFJS_VERSION: 6.5.438
   PYMUPDF_VERSION: "2.1"
 
 jobs:
