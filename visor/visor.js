@@ -153,13 +153,14 @@ eventBus.on("pagesinit", () => {
 
 // Reajusta «ancho de página» o «página completa» cuando cambia el espacio disponible
 // (paneles que se abren o cierran, ventana que cambia de tamaño).
+// Se espera a que el tamaño se estabilice para no redibujar las páginas en cada cuadro.
 let ajuste = null;
 new ResizeObserver(() => {
-  cancelAnimationFrame(ajuste);
-  ajuste = requestAnimationFrame(() => {
+  clearTimeout(ajuste);
+  ajuste = setTimeout(() => {
     const valor = viewer.currentScaleValue;
     if (viewer.pagesCount && (valor === "page-width" || valor === "page-fit")) viewer.currentScaleValue = valor;
-  });
+  }, 150);
 }).observe(contenedor);
 
 let primeraPagina = true;
