@@ -11,13 +11,14 @@ const RUTAS = {
   meta: "datos/compendio.json",
   texto: "datos/texto.json",
 };
-const POR_TANDA = 200;
+const URL_RELEASES = "https://github.com/n-a-monterocarvajal/Compendio-Normativo-Gobierno-Descentralizacion-y-Regionalizacion-Chile/releases/latest";
+const POR_TANDA = 150;
 const MAX_RESULTADOS = 10000;
 const CONTEXTO = 70;
 
 const $ = (id) => document.getElementById(id);
 const numero = new Intl.NumberFormat("es-CL");
-const estrecho = matchMedia("(max-width: 760px)");
+const movil = matchMedia("(max-width: 760px)");
 
 // ---------------------------------------------------------------------------
 // Normalización: minúsculas y sin tildes (la ñ se conserva), largo idéntico al
@@ -43,6 +44,7 @@ function plegar(texto) {
   for (const c of texto) salida += c.length === 1 ? plegarCaracter(c) : c;
   return salida;
 }
+
 // Pie de página que Ley Chile repite en cada hoja: no cuenta para la búsqueda. Se
 // reemplaza por \0 (mismo largo), así no hay coincidencias dentro de él ni a través de él.
 const PIE_LEY_CHILE = /biblioteca del congreso nacional de chile - www\.leychile\.cl - documento generado el \S+ ?pagina \d+ de \d+/g;
@@ -50,10 +52,7 @@ function sinPie(plano) {
   return plano.replace(PIE_LEY_CHILE, (m) => "\0".repeat(m.length));
 }
 const esLetra = (c) => c !== undefined && /[\p{L}\p{N}]/u.test(c);
-
-function prepararConsulta(texto) {
-  return plegar(texto.replace(/\s+/g, " ").trim());
-}
+const prepararConsulta = (texto) => plegar(texto.replace(/\s+/g, " ").trim());
 
 function* coincidencias(plano, q, palabraCompleta) {
   let desde = 0;
@@ -69,9 +68,28 @@ function* coincidencias(plano, q, palabraCompleta) {
 function escapar(t) {
   return t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 }
+const tituloLegible = (t) => t.replace(/^ART[ÍíI]CULO\b/, "Artículo").replace(/\s+/g, " ").trim();
+const recortar = (t, n) => (t.length > n ? t.slice(0, n - 1).trimEnd() + "…" : t);
 
-function tituloLegible(t) {
-  return t.replace(/^ART[ÍíI]CULO\b/, "Artículo");
+// Forma breve de una división para la ruta: «TITULO SEGUNDO DE LA …» → «Título segundo».
+const DIVISIONES = { titulo: "Título", capitulo: "Capítulo", parrafo: "Párrafo", libro: "Libro", seccion: "Sección", articulo: "Artículo", parte: "Parte" };
+function divisionBreve(t) {
+  const limpio = tituloLegible(t);
+  const m = limpio.match(/^(\S+)\s+(\S+)/);
+  const clave = m && DIVISIONES[plegar(m[1]).replace(/[^a-z]/g, "")];
+  if (clave) {
+    let ordinal = m[2].replace(/[.,:;-]+$/, "");
+    if (!/^[IVXLC]+$/.test(ordinal)) ordinal = ordinal.toLowerCase();
+    return `${clave} ${ordinal}`;
+  }
+  const frase = limpio === limpio.toUpperCase() ? limpio.charAt(0) + limpio.slice(1).toLowerCase() : limpio;
+  return recortar(frase, 34);
+}
+
+// Nombre corto de una norma: lo que va antes de «, que…», «, de…» o «, sobre…».
+function nombreCorto(titulo) {
+  const m = titulo.match(/^(.+?N\.º\s*[\d.\-]+(?:,\s*de\s*\d{4})?)/);
+  return m ? m[1] : recortar(titulo, 70);
 }
 
 // ---------------------------------------------------------------------------
@@ -79,7 +97,7 @@ function tituloLegible(t) {
 // ---------------------------------------------------------------------------
 const estado = {
   meta: null,
-  marcadores: [], // {nivel, titulo, pagina, offset}
+  marcadores: [], // {nivel, titulo, pagina, offset, padre}
   normas: [], // índices de marcadores de nivel 2
   textos: null,
   planos: null,
@@ -89,8 +107,23 @@ const estado = {
   actual: -1,
   consulta: "",
   palabraCompleta: false,
-  pendiente: null, // resultado al que hay que desplazarse cuando se dibuje su página
+  soloNorma: false,
+  pendiente: null,
 };
+
+// ---------------------------------------------------------------------------
+// Tema
+// ---------------------------------------------------------------------------
+function temaActual() {
+  const elegido = document.documentElement.dataset.theme;
+  if (elegido) return elegido;
+  return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+$("tema").addEventListener("click", () => {
+  const nuevo = temaActual() === "dark" ? "light" : "dark";
+  document.documentElement.dataset.theme = nuevo;
+  try { localStorage.setItem("visor-tema", nuevo); } catch (e) { /* sin almacenamiento */ }
+});
 
 // ---------------------------------------------------------------------------
 // Visor PDF.js
@@ -104,7 +137,7 @@ const viewer = new PDFViewer({
   eventBus,
   linkService,
   textLayerMode: 1,
-  removePageBorders: false,
+  removePageBorders: true,
 });
 linkService.setViewer(viewer);
 
@@ -114,33 +147,37 @@ const paginaInicial = (() => {
 })();
 
 eventBus.on("pagesinit", () => {
-  viewer.currentScaleValue = estrecho.matches ? "page-width" : "page-width";
+  viewer.currentScaleValue = "page-width";
   if (paginaInicial > 1) viewer.currentPageNumber = Math.min(paginaInicial, viewer.pagesCount);
 });
+
+// Reajusta «ancho de página» o «página completa» cuando cambia el espacio disponible
+// (paneles que se abren o cierran, ventana que cambia de tamaño).
+let ajuste = null;
+new ResizeObserver(() => {
+  cancelAnimationFrame(ajuste);
+  ajuste = requestAnimationFrame(() => {
+    const valor = viewer.currentScaleValue;
+    if (viewer.pagesCount && (valor === "page-width" || valor === "page-fit")) viewer.currentScaleValue = valor;
+  });
+}).observe(contenedor);
 
 let primeraPagina = true;
 eventBus.on("pagerendered", () => {
   if (primeraPagina) {
     primeraPagina = false;
-    $("carga").hidden = true;
+    $("aviso-carga").classList.add("oculto");
   }
 });
 
 eventBus.on("pagechanging", ({ pageNumber }) => {
-  $("pagina").value = pageNumber;
+  if (document.activeElement !== $("pagina")) $("pagina").value = pageNumber;
   actualizarUbicacion(pageNumber);
   history.replaceState(null, "", `#pagina=${pageNumber}`);
 });
 
 eventBus.on("scalechanging", ({ scale, presetValue }) => {
-  const select = $("escala");
-  const opcion = [...select.options].find((o) => o.value === (presetValue ?? String(scale)));
-  if (opcion && !opcion.hidden) select.value = opcion.value;
-  else {
-    const personalizada = select.querySelector('[value="personalizada"]');
-    personalizada.textContent = `${Math.round(scale * 100)} %`;
-    select.value = "personalizada";
-  }
+  $("escala").textContent = presetValue === "page-width" ? "Ancho" : presetValue === "page-fit" ? "Página" : `${Math.round(scale * 100)} %`;
 });
 
 eventBus.on("textlayerrendered", ({ pageNumber }) => {
@@ -148,7 +185,14 @@ eventBus.on("textlayerrendered", ({ pageNumber }) => {
   if (estado.pendiente && estado.pendiente.p === pageNumber) enfocarActual();
 });
 
+function progreso(fraccion) {
+  const barra = $("progreso");
+  barra.firstElementChild.style.width = `${Math.round(fraccion * 100)}%`;
+  barra.classList.toggle("listo", fraccion >= 1);
+}
+
 async function abrirDocumento() {
+  progreso(0.08);
   const tarea = pdfjsLib.getDocument({
     url: RUTAS.pdf,
     disableAutoFetch: true,
@@ -160,22 +204,18 @@ async function abrirDocumento() {
     wasmUrl: "pdfjs/wasm/",
   });
   tarea.onProgress = ({ loaded, total }) => {
-    const barra = $("progreso");
-    if (total) {
-      barra.max = total;
-      barra.value = loaded;
-    }
+    if (total) progreso(Math.max(0.08, loaded / total));
   };
   try {
     const documento = await tarea.promise;
     viewer.setDocument(documento);
     linkService.setDocument(documento);
     $("total-paginas").textContent = `/ ${numero.format(documento.numPages)}`;
+    setTimeout(() => progreso(1), 1500);
   } catch (error) {
     console.error(error);
-    $("texto-carga").innerHTML =
-      'No se pudo abrir el PDF. <a href="https://github.com/n-a-monterocarvajal/Compendio-Normativo-Gobierno-Descentralizacion-y-Regionalizacion-Chile/releases/latest">Descárguelo desde el release</a>.';
-    $("progreso").hidden = true;
+    progreso(1);
+    $("aviso-carga").innerHTML = `No se pudo abrir el PDF. <a href="${URL_RELEASES}">Descárguelo desde el release</a>.`;
   }
 }
 
@@ -185,90 +225,134 @@ async function abrirDocumento() {
 async function cargarMeta() {
   const meta = await (await fetch(RUTAS.meta)).json();
   estado.meta = meta;
-  estado.marcadores = meta.marcadores.map(([nivel, titulo, pagina]) => ({ nivel, titulo, pagina, offset: 0 }));
+  const pila = [];
+  estado.marcadores = meta.marcadores.map(([nivel, titulo, pagina], i) => {
+    while (pila.length && pila.at(-1).nivel >= nivel) pila.pop();
+    const m = { nivel, titulo, pagina, offset: 0, padre: pila.length ? pila.at(-1).i : -1, i };
+    pila.push(m);
+    return m;
+  });
   estado.normas = estado.marcadores.flatMap((m, i) => (m.nivel === 2 ? [i] : []));
-  if (meta.titulo) $("titulo").textContent = meta.titulo;
   if (meta.url_descarga) $("descargar").href = meta.url_descarga;
 
-  const pie = $("pie-panel");
   const fecha = meta.publicado ? new Date(meta.publicado).toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" }) : "";
-  pie.innerHTML =
-    `Versión ${meta.url_release ? `<a href="${escapar(meta.url_release)}">${escapar(meta.tag || meta.archivo)}</a>` : escapar(meta.archivo)}` +
-    (fecha ? `, publicada el ${escapar(fecha)}` : "") +
-    `. ${numero.format(meta.paginas)} páginas.`;
+  const version = meta.url_release ? `<a href="${escapar(meta.url_release)}">${escapar(meta.tag || meta.archivo)}</a>` : escapar(meta.archivo);
+  $("pie").innerHTML =
+    `${numero.format(estado.normas.length)} normas · ${numero.format(meta.paginas)} páginas<br>` +
+    `Versión ${version}${fecha ? `, publicada el ${escapar(fecha)}` : ""}.`;
 
   construirIndice();
   actualizarUbicacion(viewer.currentPageNumber || 1);
 }
 
-function arbolDeMarcadores(lista) {
-  const raiz = { nivel: 0, hijos: [] };
-  const pila = [raiz];
-  lista.forEach((m, i) => {
-    const nodo = { ...m, i, hijos: [] };
-    while (pila.length > 1 && pila.at(-1).nivel >= m.nivel) pila.pop();
-    pila.at(-1).hijos.push(nodo);
-    pila.push(nodo);
-  });
-  return raiz.hijos;
-}
-
 const iconoFlecha = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
 const filasPorMarcador = new Map();
 
-function dibujarLista(nodos, ul, abrirHasta) {
-  for (const nodo of nodos) {
-    const li = document.createElement("li");
-    li.className = `nivel-${Math.min(nodo.nivel, 3)}`;
-    const fila = document.createElement("div");
-    fila.className = "fila";
-
-    const desplegar = document.createElement("button");
-    desplegar.type = "button";
-    desplegar.className = "desplegar" + (nodo.hijos.length ? "" : " vacio");
-    desplegar.innerHTML = iconoFlecha;
-    desplegar.setAttribute("aria-expanded", "false");
-    desplegar.setAttribute("aria-label", "Desplegar");
-    desplegar.tabIndex = nodo.hijos.length ? 0 : -1;
-
-    const entrada = document.createElement("button");
-    entrada.type = "button";
-    entrada.className = "entrada";
-    entrada.title = nodo.titulo;
-    entrada.innerHTML = `<span>${escapar(tituloLegible(nodo.titulo))}</span><span class="pag">${numero.format(nodo.pagina)}</span>`;
-    entrada.addEventListener("click", () => {
-      irAPagina(nodo.pagina);
-      if (estrecho.matches) mostrarPanel(false);
-    });
-    filasPorMarcador.set(nodo.i, entrada);
-
-    fila.append(desplegar, entrada);
-    li.append(fila);
-    ul.append(li);
-
-    if (nodo.hijos.length) {
-      let sub = null;
-      const alternar = (abrir) => {
-        if (abrir && !sub) {
-          sub = document.createElement("ul");
-          dibujarLista(nodo.hijos, sub, abrirHasta);
-          li.append(sub);
-        }
-        if (sub) sub.hidden = !abrir;
-        desplegar.setAttribute("aria-expanded", String(abrir));
-      };
-      desplegar.addEventListener("click", () => alternar(desplegar.getAttribute("aria-expanded") !== "true"));
-      if (nodo.nivel < abrirHasta) alternar(true);
-    }
+function hijosDe(i) {
+  const { marcadores } = estado;
+  const nivel = i < 0 ? 0 : marcadores[i].nivel;
+  const hijos = [];
+  for (let j = i + 1; j < marcadores.length && marcadores[j].nivel > nivel; j++) {
+    if (marcadores[j].padre === i) hijos.push(j);
   }
+  return hijos;
+}
+const tieneHijos = (i) => i + 1 < estado.marcadores.length && estado.marcadores[i + 1].padre === i;
+
+function contenidoEntrada(m) {
+  if (m.nivel === 1) {
+    const partes = m.titulo.match(/^([IVXLC]+)\.\s+(.*)$/);
+    if (partes) return `<span><span class="numeral">${partes[1]}</span>${escapar(partes[2])}</span>`;
+  }
+  if (m.nivel === 2) {
+    const corto = nombreCorto(m.titulo);
+    const resto = m.titulo.slice(corto.length).replace(/^[,.\s]+/, "");
+    if (resto) return `<span><span class="norma-nombre">${escapar(corto)}</span><span class="norma-materia">${escapar(resto)}</span></span>`;
+  }
+  return `<span>${escapar(tituloLegible(m.titulo))}</span>`;
+}
+
+function crearFila(i, ul, abrirHasta) {
+  const m = estado.marcadores[i];
+  const li = document.createElement("li");
+  li.className = `nivel-${Math.min(m.nivel, 3)}`;
+  const fila = document.createElement("div");
+  fila.className = "fila";
+  const conHijos = tieneHijos(i);
+
+  const desplegar = document.createElement("button");
+  desplegar.type = "button";
+  desplegar.className = "desplegar" + (conHijos ? "" : " vacio");
+  desplegar.innerHTML = iconoFlecha;
+  desplegar.setAttribute("aria-expanded", "false");
+  desplegar.setAttribute("aria-label", "Desplegar");
+  desplegar.tabIndex = conHijos ? 0 : -1;
+
+  const entrada = document.createElement("button");
+  entrada.type = "button";
+  entrada.className = "entrada";
+  entrada.title = m.titulo;
+  entrada.innerHTML = `${contenidoEntrada(m)}<span class="pag">${numero.format(m.pagina)}</span>`;
+  entrada.addEventListener("click", () => {
+    irAPagina(m.pagina);
+    if (movil.matches) mostrarIndice(false);
+  });
+  filasPorMarcador.set(i, fila);
+
+  fila.append(desplegar, entrada);
+  li.append(fila);
+  ul.append(li);
+
+  if (conHijos) {
+    let sub = null;
+    const alternar = (abrir) => {
+      if (abrir && !sub) {
+        sub = document.createElement("ul");
+        for (const h of hijosDe(i)) crearFila(h, sub, abrirHasta);
+        li.append(sub);
+      }
+      if (sub) sub.hidden = !abrir;
+      desplegar.setAttribute("aria-expanded", String(abrir));
+    };
+    desplegar.addEventListener("click", () => alternar(desplegar.getAttribute("aria-expanded") !== "true"));
+    li.alternar = alternar;
+    if (m.nivel < abrirHasta) alternar(true);
+  }
+  return li;
 }
 
 function construirIndice() {
   const nav = $("indice");
   nav.textContent = "";
+  filasPorMarcador.clear();
+  normaMarcada = null;
   const ul = document.createElement("ul");
-  dibujarLista(arbolDeMarcadores(estado.marcadores), ul, 2);
+  for (const i of hijosDe(-1)) crearFila(i, ul, 2);
   nav.append(ul);
+}
+
+function filtrarIndice() {
+  const q = prepararConsulta($("filtro-indice").value);
+  if (!q) { construirIndice(); actualizarUbicacion(viewer.currentPageNumber || 1); return; }
+  const nav = $("indice");
+  nav.textContent = "";
+  const ul = document.createElement("ul");
+  let total = 0;
+  for (const i of estado.normas) {
+    const m = estado.marcadores[i];
+    if (!plegar(m.titulo).includes(q)) continue;
+    total++;
+    const li = document.createElement("li");
+    li.className = "nivel-2 filtrada";
+    const capitulo = m.padre >= 0 ? estado.marcadores[m.padre].titulo : "";
+    li.innerHTML = `<div class="fila"><button type="button" class="entrada" title="${escapar(m.titulo)}"><span>${escapar(m.titulo)}<span class="capitulo-filtro">${escapar(capitulo)}</span></span><span class="pag">${numero.format(m.pagina)}</span></button></div>`;
+    li.querySelector("button").addEventListener("click", () => {
+      irAPagina(m.pagina);
+      if (movil.matches) mostrarIndice(false);
+    });
+    ul.append(li);
+  }
+  nav.append(total ? ul : Object.assign(document.createElement("p"), { className: "aviso", textContent: "Ninguna norma coincide con el filtro." }));
 }
 
 // Última norma (marcador de nivel 2) que empieza en la página indicada o antes.
@@ -282,7 +366,7 @@ function normaDePagina(p) {
   return r;
 }
 
-// Marcador más profundo (nivel ≥ 3) vigente en la posición indicada de la página.
+// Marcador más profundo (nivel ≥ 3) vigente en una posición de una página.
 function seccionDePosicion(p, pos) {
   const { marcadores } = estado;
   let lo = 0, hi = marcadores.length - 1, r = -1;
@@ -291,11 +375,17 @@ function seccionDePosicion(p, pos) {
     const m = marcadores[mid];
     if (m.pagina < p || (m.pagina === p && m.offset <= pos)) { r = mid; lo = mid + 1; } else hi = mid - 1;
   }
-  for (let i = r; i >= 0; i--) {
-    if (marcadores[i].nivel <= 2) return null;
-    if (marcadores[i].titulo !== "Encabezado") return marcadores[i];
+  return r >= 0 && marcadores[r].nivel > 2 ? r : -1;
+}
+
+// Ruta dentro de la norma: «Título II › Párrafo 1° › Artículo 24».
+function rutaDe(i) {
+  const partes = [];
+  for (let j = i; j >= 0 && estado.marcadores[j].nivel > 2; j = estado.marcadores[j].padre) {
+    const t = estado.marcadores[j].titulo;
+    if (t !== "Encabezado") partes.unshift(tituloLegible(t));
   }
-  return null;
+  return partes;
 }
 
 let normaMarcada = null;
@@ -304,6 +394,7 @@ function actualizarUbicacion(p) {
   const n = normaDePagina(p);
   const marcador = n >= 0 ? estado.marcadores[estado.normas[n]] : null;
   $("ubicacion").textContent = marcador ? marcador.titulo : "";
+  $("ubicacion").title = marcador ? marcador.titulo : "";
   const fila = n >= 0 ? filasPorMarcador.get(estado.normas[n]) : null;
   if (normaMarcada !== fila) {
     normaMarcada?.classList.remove("actual");
@@ -321,18 +412,18 @@ function irAPagina(p) {
 // ---------------------------------------------------------------------------
 function cargarTexto() {
   if (!estado.cargaTexto) {
-    $("estado-busqueda").textContent = "Cargando el texto del compendio…";
+    $("contador").textContent = "Cargando…";
     estado.cargaTexto = fetch(RUTAS.texto)
       .then((r) => r.json())
       .then((textos) => {
         estado.textos = textos;
         estado.planos = textos.map((t) => sinPie(plegar(t)));
         ubicarMarcadoresEnTexto();
-        if (!$("consulta").value.trim()) $("estado-busqueda").textContent = "Escriba al menos dos caracteres. No distingue mayúsculas ni tildes.";
+        if (!estado.consulta) $("contador").textContent = "";
       })
       .catch((error) => {
         console.error(error);
-        $("estado-busqueda").textContent = "No se pudo cargar el texto para buscar.";
+        $("contador").textContent = "Sin texto";
         estado.cargaTexto = null;
         throw error;
       });
@@ -357,53 +448,66 @@ function ubicarMarcadoresEnTexto() {
 // Búsqueda
 // ---------------------------------------------------------------------------
 function rangoDePaginas() {
-  if (!$("solo-norma").checked || !estado.normas.length) return [1, estado.textos.length];
+  const total = estado.textos.length;
+  if (!estado.soloNorma || !estado.normas.length) return [1, total];
   const n = normaDePagina(viewer.currentPageNumber || 1);
-  if (n < 0) return [1, estado.textos.length];
+  if (n < 0) return [1, total];
   const desde = estado.marcadores[estado.normas[n]].pagina;
   const siguiente = estado.normas[n + 1];
-  const hasta = siguiente !== undefined ? estado.marcadores[siguiente].pagina : estado.textos.length;
-  return [desde, hasta];
+  return [desde, siguiente !== undefined ? estado.marcadores[siguiente].pagina : total];
+}
+
+function mostrarResultados(visible) {
+  $("resultados-panel").hidden = !visible;
+  $("buscador").classList.toggle("activo", visible);
+  actualizarVelo();
 }
 
 async function buscar() {
-  const texto = $("consulta").value;
-  const q = prepararConsulta(texto);
+  const q = prepararConsulta($("consulta").value);
   estado.consulta = q.length >= 2 ? q : "";
-  estado.palabraCompleta = $("palabra-completa").checked;
+  estado.palabraCompleta = $("palabra-completa").getAttribute("aria-pressed") === "true";
   estado.resultados = [];
   estado.actual = -1;
   estado.pendiente = null;
   $("resultados").textContent = "";
 
   if (!estado.consulta) {
-    $("estado-busqueda").textContent = "Escriba al menos dos caracteres. No distingue mayúsculas ni tildes.";
+    $("contador").textContent = "";
+    mostrarResultados(false);
     actualizarFlechas();
     resaltarTodo();
     return;
   }
+  mostrarResultados(true);
+  $("estado-busqueda").textContent = "Buscando…";
   await cargarTexto();
   if (q !== prepararConsulta($("consulta").value)) return; // llegó otra consulta mientras cargaba
 
   const [desde, hasta] = rangoDePaginas();
   const resultados = [];
-  const paginas = new Set();
+  const porNorma = new Map();
   let excedido = false;
   for (let p = desde; p <= hasta && !excedido; p++) {
     let k = 0;
     for (const pos of coincidencias(estado.planos[p - 1], q, estado.palabraCompleta)) {
-      resultados.push({ p, pos, k: k++ });
-      paginas.add(p);
+      const n = normaDePagina(p);
+      resultados.push({ p, pos, k: k++, n });
+      porNorma.set(n, (porNorma.get(n) || 0) + 1);
       if (resultados.length >= MAX_RESULTADOS) { excedido = true; break; }
     }
   }
   estado.resultados = resultados;
+  estado.porNorma = porNorma;
   estado.mostrados = 0;
+  const total = excedido ? `${numero.format(MAX_RESULTADOS)}+` : numero.format(resultados.length);
   if (!resultados.length) {
-    $("estado-busqueda").textContent = "Sin coincidencias.";
+    $("estado-busqueda").textContent = "Sin coincidencias";
+    $("contador").textContent = "0";
+    $("resultados").innerHTML = `<li class="aviso">No hay coincidencias${estado.soloNorma ? " en esta norma" : ""}. La búsqueda no distingue mayúsculas ni tildes.</li>`;
   } else {
-    const cuantas = excedido ? `Más de ${numero.format(MAX_RESULTADOS)} coincidencias` : `${numero.format(resultados.length)} ${resultados.length === 1 ? "coincidencia" : "coincidencias"}`;
-    $("estado-busqueda").textContent = `${cuantas} en ${numero.format(paginas.size)} ${paginas.size === 1 ? "página" : "páginas"}.`;
+    $("estado-busqueda").textContent = `${total} ${resultados.length === 1 ? "coincidencia" : "coincidencias"} en ${numero.format(porNorma.size)} ${porNorma.size === 1 ? "norma" : "normas"}`;
+    $("contador").textContent = total;
     mostrarMas();
   }
   actualizarFlechas();
@@ -420,16 +524,16 @@ function fragmento(r) {
     for (let i = desde; i < hasta; i++) if (plano[i] !== "\0") t += original[i];
     return t.replace(/\s+/g, " ");
   };
-  let antes = limpio(0, r.pos);
-  let despues = limpio(r.pos + largo, original.length);
-  const cortaAntes = antes.length > CONTEXTO;
-  const cortaDespues = despues.length > CONTEXTO;
-  if (cortaAntes) {
+  let antes = limpio(Math.max(0, r.pos - 400), r.pos);
+  let despues = limpio(r.pos + largo, Math.min(original.length, r.pos + largo + 400));
+  const cortaAntes = antes.length > CONTEXTO || r.pos > 400;
+  const cortaDespues = despues.length > CONTEXTO || r.pos + largo + 400 < original.length;
+  if (antes.length > CONTEXTO) {
     antes = antes.slice(-CONTEXTO);
     const s = antes.indexOf(" ");
     if (s !== -1) antes = antes.slice(s + 1);
   }
-  if (cortaDespues) {
+  if (despues.length > CONTEXTO) {
     despues = despues.slice(0, CONTEXTO);
     const s = despues.lastIndexOf(" ");
     if (s > 0) despues = despues.slice(0, s);
@@ -437,41 +541,44 @@ function fragmento(r) {
   return (cortaAntes ? "… " : "") + escapar(antes) + "<mark>" + escapar(original.slice(r.pos, r.pos + largo)) + "</mark>" + escapar(despues) + (cortaDespues ? " …" : "");
 }
 
-function etiquetaUbicacion(r) {
-  const n = normaDePagina(r.p);
-  const norma = n >= 0 ? estado.marcadores[estado.normas[n]].titulo : "";
-  const seccion = seccionDePosicion(r.p, r.pos);
-  return { norma, seccion: seccion ? tituloLegible(seccion.titulo) : "" };
-}
-
 function mostrarMas() {
   const ol = $("resultados");
   ol.querySelector(".mas")?.remove();
   const hasta = Math.min(estado.resultados.length, estado.mostrados + POR_TANDA);
-  const fragmentoDom = document.createDocumentFragment();
+  const tanda = document.createDocumentFragment();
   for (let i = estado.mostrados; i < hasta; i++) {
     const r = estado.resultados[i];
-    const { norma, seccion } = etiquetaUbicacion(r);
+    const anterior = estado.resultados[i - 1];
+    if (!anterior || anterior.n !== r.n) {
+      const norma = r.n >= 0 ? estado.marcadores[estado.normas[r.n]].titulo : "Sin norma";
+      const grupo = document.createElement("li");
+      grupo.className = "grupo";
+      grupo.title = norma;
+      grupo.innerHTML = `<span>${escapar(nombreCorto(norma))}</span><span>${numero.format(estado.porNorma.get(r.n) || 0)}</span>`;
+      tanda.append(grupo);
+    }
+    const seccion = seccionDePosicion(r.p, r.pos);
+    const ruta = seccion >= 0 ? rutaDe(seccion) : [];
+    const rutaTexto = ruta.map(divisionBreve).join(" › ");
     const li = document.createElement("li");
     const boton = document.createElement("button");
     boton.type = "button";
     boton.className = "resultado";
     boton.dataset.i = i;
-    boton.title = norma;
+    boton.title = ruta.join(" › ");
     boton.innerHTML =
-      `<span class="donde"><span>${escapar(seccion ? `${seccion} · ${norma}` : norma)}</span><span>pág. ${numero.format(r.p)}</span></span>` +
+      `<span class="donde"><span>${escapar(rutaTexto || "Encabezado")}</span><span>p. ${numero.format(r.p)}</span></span>` +
       fragmento(r);
     li.append(boton);
-    fragmentoDom.append(li);
+    tanda.append(li);
   }
-  ol.append(fragmentoDom);
+  ol.append(tanda);
   estado.mostrados = hasta;
   if (hasta < estado.resultados.length) {
     const li = document.createElement("li");
     li.className = "mas";
     const boton = document.createElement("button");
     boton.type = "button";
-    boton.className = "boton";
     boton.textContent = `Mostrar ${numero.format(Math.min(POR_TANDA, estado.resultados.length - hasta))} más`;
     boton.addEventListener("click", mostrarMas);
     li.append(boton);
@@ -489,7 +596,7 @@ function seleccionar(i) {
   boton?.scrollIntoView({ block: "nearest" });
   estado.actual = i;
   const r = estado.resultados[i];
-  $("estado-busqueda").textContent = `Coincidencia ${numero.format(i + 1)} de ${numero.format(estado.resultados.length)}${estado.resultados.length >= MAX_RESULTADOS ? "+" : ""}.`;
+  $("contador").textContent = `${numero.format(i + 1)} de ${numero.format(estado.resultados.length)}${estado.resultados.length >= MAX_RESULTADOS ? "+" : ""}`;
   estado.pendiente = r;
   actualizarFlechas();
   resaltarTodo();
@@ -591,71 +698,102 @@ function enfocarActual() {
   const rango = rangos[Math.min(r.k, rangos.length - 1)];
   const caja = rango.getBoundingClientRect();
   const marco = contenedor.getBoundingClientRect();
-  contenedor.scrollTop += caja.top - marco.top - marco.height * 0.3;
-  if (caja.left < marco.left || caja.right > marco.right) contenedor.scrollLeft += caja.left - marco.left - 40;
+  contenedor.scrollTo({
+    top: contenedor.scrollTop + caja.top - marco.top - marco.height * 0.3,
+    left: caja.left < marco.left || caja.right > marco.right ? contenedor.scrollLeft + caja.left - marco.left - 40 : contenedor.scrollLeft,
+  });
   estado.pendiente = null;
   return true;
 }
 
 // ---------------------------------------------------------------------------
-// Panel, pestañas y teclado
+// Paneles y teclado
 // ---------------------------------------------------------------------------
-function mostrarPanel(visible) {
-  $("panel").classList.toggle("oculto", !visible);
-  $("alternar-panel").setAttribute("aria-expanded", String(visible));
+function mostrarIndice(visible) {
+  $("indice-panel").classList.toggle("oculto", !visible);
+  $("alternar-indice").setAttribute("aria-expanded", String(visible));
+  actualizarVelo();
 }
-
-function elegirPestana(cual) {
-  const buscar = cual === "buscar";
-  $("pestana-indice").setAttribute("aria-selected", String(!buscar));
-  $("pestana-buscar").setAttribute("aria-selected", String(buscar));
-  $("vista-indice").hidden = buscar;
-  $("vista-buscar").hidden = !buscar;
+function actualizarVelo() {
+  const indiceAbierto = !$("indice-panel").classList.contains("oculto");
+  const resultadosAbiertos = !$("resultados-panel").hidden;
+  $("velo").hidden = !(movil.matches && (indiceAbierto || resultadosAbiertos));
+}
+function cerrarResultados() {
+  if (movil.matches) mostrarResultados(false);
+  else {
+    $("consulta").value = "";
+    buscar();
+  }
 }
 
 function abrirBusqueda() {
-  mostrarPanel(true);
-  elegirPestana("buscar");
   const consulta = $("consulta");
   consulta.focus();
   consulta.select();
   cargarTexto().catch(() => {});
 }
 
-function ajustarAltoBarra() {
-  document.documentElement.style.setProperty("--alto-barra", `${document.querySelector(".barra").offsetHeight}px`);
-}
-
 let espera = null;
 $("consulta").addEventListener("input", () => {
   clearTimeout(espera);
-  espera = setTimeout(buscar, 220);
+  espera = setTimeout(buscar, 200);
+});
+$("consulta").addEventListener("focus", () => {
+  cargarTexto().catch(() => {});
+  if (estado.consulta && movil.matches) mostrarResultados(true);
 });
 $("consulta").addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     clearTimeout(espera);
-    const avanzar = () => seleccionar(estado.actual + (e.shiftKey ? -1 : 1));
+    const avanzar = () => {
+      seleccionar(estado.actual + (e.shiftKey ? -1 : 1));
+      if (movil.matches) { mostrarResultados(false); $("consulta").blur(); }
+    };
     if (prepararConsulta($("consulta").value) !== estado.consulta) buscar().then(avanzar);
     else avanzar();
+  } else if (e.key === "Escape") {
+    $("consulta").value = "";
+    buscar();
+    contenedor.focus();
   }
 });
 $("buscador").addEventListener("submit", (e) => e.preventDefault());
-$("solo-norma").addEventListener("change", buscar);
-$("palabra-completa").addEventListener("change", buscar);
 $("anterior").addEventListener("click", () => seleccionar(estado.actual - 1));
 $("siguiente").addEventListener("click", () => seleccionar(estado.actual + 1));
 $("resultados").addEventListener("click", (e) => {
   const boton = e.target.closest(".resultado");
   if (!boton) return;
   seleccionar(Number(boton.dataset.i));
-  if (estrecho.matches) mostrarPanel(false);
+  if (movil.matches) mostrarResultados(false);
+});
+for (const boton of document.querySelectorAll("[data-alcance]")) {
+  boton.addEventListener("click", () => {
+    for (const b of document.querySelectorAll("[data-alcance]")) b.setAttribute("aria-checked", String(b === boton));
+    estado.soloNorma = boton.dataset.alcance === "norma";
+    buscar();
+  });
+}
+$("palabra-completa").addEventListener("click", (e) => {
+  const boton = e.currentTarget;
+  boton.setAttribute("aria-pressed", String(boton.getAttribute("aria-pressed") !== "true"));
+  buscar();
+});
+document.querySelector('[data-cerrar="resultados"]').addEventListener("click", cerrarResultados);
+document.querySelector('[data-cerrar="indice"]').addEventListener("click", () => mostrarIndice(false));
+$("velo").addEventListener("click", () => {
+  mostrarIndice(false);
+  mostrarResultados(false);
 });
 
-$("pestana-indice").addEventListener("click", () => elegirPestana("indice"));
-$("pestana-buscar").addEventListener("click", abrirBusqueda);
-$("abrir-busqueda").addEventListener("click", abrirBusqueda);
-$("alternar-panel").addEventListener("click", () => mostrarPanel($("panel").classList.contains("oculto")));
+let esperaFiltro = null;
+$("filtro-indice").addEventListener("input", () => {
+  clearTimeout(esperaFiltro);
+  esperaFiltro = setTimeout(filtrarIndice, 120);
+});
+
+$("alternar-indice").addEventListener("click", () => mostrarIndice($("indice-panel").classList.contains("oculto")));
 
 $("pagina").addEventListener("change", () => {
   const p = parseInt($("pagina").value, 10);
@@ -663,9 +801,9 @@ $("pagina").addEventListener("change", () => {
   else $("pagina").value = viewer.currentPageNumber;
 });
 $("pagina").addEventListener("focus", () => $("pagina").select());
-$("escala").addEventListener("change", () => {
-  const v = $("escala").value;
-  if (v !== "personalizada") viewer.currentScaleValue = v;
+$("pagina").addEventListener("keydown", (e) => { if (e.key === "Enter") $("pagina").blur(); });
+$("escala").addEventListener("click", () => {
+  viewer.currentScaleValue = viewer.currentScaleValue === "page-width" ? "page-fit" : "page-width";
 });
 $("acercar").addEventListener("click", () => viewer.increaseScale());
 $("alejar").addEventListener("click", () => viewer.decreaseScale());
@@ -679,15 +817,17 @@ window.addEventListener("keydown", (e) => {
     if (!estado.resultados.length) return;
     e.preventDefault();
     seleccionar(estado.actual + (e.shiftKey ? -1 : 1));
-  } else if (e.key === "Escape" && estrecho.matches && !$("panel").classList.contains("oculto")) {
-    mostrarPanel(false);
+  } else if (e.key === "Escape" && movil.matches) {
+    mostrarIndice(false);
+    mostrarResultados(false);
   }
 });
 
-window.addEventListener("resize", ajustarAltoBarra);
-estrecho.addEventListener("change", () => mostrarPanel(!estrecho.matches));
-ajustarAltoBarra();
-if (estrecho.matches) mostrarPanel(false);
+movil.addEventListener("change", () => {
+  mostrarIndice(!movil.matches);
+  actualizarVelo();
+});
+if (movil.matches) mostrarIndice(false);
 
 // ---------------------------------------------------------------------------
 // Inicio
@@ -701,6 +841,5 @@ cargarMeta().catch((error) => {
 const consultaInicial = new URLSearchParams(location.hash.slice(1)).get("buscar");
 if (consultaInicial) {
   $("consulta").value = consultaInicial;
-  abrirBusqueda();
   buscar();
 }
